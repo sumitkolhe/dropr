@@ -1,0 +1,485 @@
+<head>
+  <title>P2P File Sharing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
+  <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous"
+  />
+  <style>
+    body {
+      background-color: #ffffff;
+    }
+
+    .pane {
+      display: none;
+    }
+
+    .pane.active {
+      display: block;
+    }
+
+    .btnset {
+      display: none;
+    }
+
+    .btnset.active {
+      display: block;
+    }
+
+    .lds-ellipsis {
+      display: inline-block;
+      position: relative;
+      width: 128px;
+      height: 64px;
+    }
+    .lds-ellipsis div {
+      position: absolute;
+      top: 27px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+      left: 6px;
+    }
+    .lds-ellipsis div:nth-child(1) {
+      background-color: #4285f4;
+      animation: lds-ellipsis1 2s infinite;
+    }
+    .lds-ellipsis div:nth-child(2) {
+      background-color: #34a853;
+      animation: lds-ellipsis1 2s infinite -0.5s;
+    }
+    .lds-ellipsis div:nth-child(3) {
+      background-color: #fbbc05;
+      animation: lds-ellipsis1 2s infinite -1s;
+    }
+    .lds-ellipsis div:nth-child(4) {
+      background-color: #f55555;
+      animation: lds-ellipsis1 2s infinite -1.5s;
+    }
+    @keyframes lds-ellipsis1 {
+      0% {
+        transform: scale(0) translate(0, 0);
+      }
+      25% {
+        transform: scale(1) translate(0, 0);
+      }
+      50% {
+        transform: scale(1) translate(40px, 0);
+      }
+      75% {
+        transform: scale(1) translate(80px, 0);
+      }
+      100% {
+        transform: scale(0) translate(80px, 0);
+      }
+    }
+    .header {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" style="margin-top: 10vh">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title header">
+            <b> Dropr</b> - Peer to Peer File Sharing
+          </h3>
+        </div>
+        <div class="modal-body">
+          <div class="pane active" id="pane-connect">
+            <h5 style="margin-bottom: 20px">Your Peer code</h5>
+            <div
+              id="lbl-partner-code"
+              class="alert alert-secondary"
+              role="alert"
+            >
+              222222
+            </div>
+            <hr />
+            <h5>Connect to Other Peers</h5>
+            <div class="form-group row" style="margin-top: 20px">
+              <label for="tb-partner-code" class="col-sm-4 col-form-label"
+                >Partner Peer Code</label
+              >
+              <div class="col-sm-8">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="tb-partner-code"
+                  placeholder="Enter partner peer code"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="pane" id="pane-accept">
+            <h5>Incoming request from</h5>
+            <div
+              id="lbl-incoming-code"
+              class="alert alert-secondary"
+              role="alert"
+            ></div>
+          </div>
+          <div class="pane" id="pane-file">
+            <div
+              id="lbl-incoming-code"
+              class="alert alert-secondary"
+              role="alert"
+            >
+              Awaiting Transfers
+            </div>
+            <div class="form-group row" style="margin-top: 20px">
+              <label for="inp-file" class="col-sm-4 col-form-label"
+                >Choose a File</label
+              >
+              <div class="col-sm-8">
+                <input type="file" class="form-control" id="inp-file" />
+              </div>
+            </div>
+          </div>
+          <div class="pane" id="pane-file-accept">
+            <h5>Incoming file transfer request</h5>
+            <div
+              id="lbl-incoming-file"
+              class="alert alert-secondary"
+              role="alert"
+            ></div>
+          </div>
+          <div class="pane" id="pane-file-transfer">
+            <h5>Transferring</h5>
+            <div class="progress">
+              <div
+                id="pb-transfer"
+                class="progress-bar progress-bar-striped progress-bar-animated"
+                role="progressbar"
+                aria-valuenow="0"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                style="width: 75%"
+              ></div>
+            </div>
+            <h4 id="transfer-action">Sent</h4>
+            <span id="transfer-bytes"></span>
+          </div>
+          <div class="pane" id="pane-file-download">
+            <h5>Transferring</h5>
+            <a
+              id="btn-file-download"
+              class="btn btn-primary"
+              href=""
+              target="_blank"
+            >
+              Click here to download file
+            </a>
+          </div>
+          <div class="pane" id="pane-loading" style="text-align: center">
+            <h5 id="pane-loading-message"></h5>
+            <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div id="btnset-connect" class="btnset active">
+            <button id="btn-connect" type="button" class="btn btn-primary">
+              Connect
+            </button>
+          </div>
+          <div id="btnset-accept" class="btnset">
+            <button id="btn-accept" type="button" class="btn btn-success">
+              Accept
+            </button>
+            <button id="btn-reject" type="button" class="btn btn-danger">
+              Reject
+            </button>
+          </div>
+          <div id="btnset-file" class="btnset">
+            <button id="btn-upload" class="btn btn-primary" type="button">
+              Upload
+            </button>
+          </div>
+          <div id="btnset-file-accept" class="btnset">
+            <button id="btn-file-accept" type="button" class="btn btn-success">
+              Accept
+            </button>
+            <button id="btn-file-reject" type="button" class="btn btn-danger">
+              Reject
+            </button>
+          </div>
+          <div id="btnset-file-transfer" class="btnset"></div>
+        </div>
+      </div>
+      <div id="alert-message" class="alert" style="margin-top: 20px"></div>
+    </div>
+  </div>
+
+  <!-- Bootstrap essentials -->
+  <script
+    src="https://code.jquery.com/jquery-3.2.1.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"
+  ></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var state = 0;
+    var socket = io();
+
+    $(document).ready(function () {
+      $("#alert-message").hide(0);
+      document.getElementById("btn-connect").onclick = function () {
+        document.getElementById("btn-connect").disabled = true;
+        var targetId = document.getElementById("tb-partner-code").value;
+        showLoading("Connecting to " + targetId);
+        socket.emit("connectRequest", targetId);
+      };
+
+      document.getElementById("btn-accept").onclick = function () {
+        showLoading("Connecting to partner");
+        socket.emit("connectAccept");
+      };
+
+      document.getElementById("btn-reject").onclick = function () {
+        socket.emit("connectReject");
+        showPane("pane-connect");
+        showButtons("btnset-connect");
+      };
+
+      document.getElementById("btn-upload").onclick = function () {
+        document.getElementById("btn-upload").disabled = true;
+        socket.emit("transferRequest", {
+          name: curFile.name,
+          size: curFile.size,
+          type: curFile.type,
+        });
+      };
+
+      document.getElementById("btn-file-accept").onclick = function () {
+        socket.emit("transferAccept");
+        showPane("pane-file-transfer");
+        showButtons("btnset-file-transfer");
+      };
+
+      document.getElementById("btn-file-reject").onclick = function () {
+        socket.emit("transferReject");
+        showPane("pane-file");
+        showButtons("btnset-file");
+      };
+
+      document
+        .getElementById("inp-file")
+        .addEventListener("change", fileChosen);
+
+      socket.on("stateQuery", function () {
+        socket.emit("stateReply", state);
+        state = 1;
+      });
+
+      socket.on("refresh", function (msg) {
+        if (msg != undefined) {
+          alert(msg);
+        }
+        location.reload();
+      });
+
+      socket.on("readyReply", function (ss) {
+        document.getElementById("lbl-partner-code").innerHTML = ss;
+      });
+
+      socket.on("connectReply", function (ss) {
+        if (ss["status"] == 404) {
+          showPane("pane-connect");
+          showAlert("Invalid code", "alert-danger");
+          document.getElementById("btn-connect").disabled = false;
+        } else if (ss["status"] == 202) {
+          showPane("pane-connect");
+          showAlert("Partner is busy", "alert-secondary");
+          document.getElementById("btn-connect").disabled = false;
+        } else if (ss["status"] == 204) {
+          showPane("pane-connect");
+          showAlert(
+            "Partner rejected your connection request",
+            "alert-secondary"
+          );
+          document.getElementById("btn-connect").disabled = false;
+        } else if (ss["status"] == 201) {
+          document.getElementById("pane-loading-message").innerHTML =
+            "Waiting for partner's acceptance";
+        } else if (ss["status"] == 200 || ss["status"] == 300) {
+          //request accepted
+          showPane("pane-file");
+          showButtons("btnset-file");
+          document.getElementById("btn-connect").disabled = false;
+        }
+      });
+
+      socket.on("incomingConnect", function (ss) {
+        document.getElementById("lbl-incoming-code").innerHTML =
+          ss["partnerId"];
+        showPane("pane-accept");
+        showButtons("btnset-accept");
+      });
+
+      socket.on("transferReply", function (ss) {
+        if (ss["status"] == 404) {
+          showAlert("Your partner has disconnected", "alert-danger");
+          document.getElementById("btn-upload").disabled = false;
+        } else if (ss["status"] == 403) {
+          showAlert("Your partner is in the invalid state", "alert-danger");
+          document.getElementById("btn-upload").disabled = false;
+        } else if (ss["status"] == 204) {
+          showPane("pane-file");
+          showAlert(
+            "Partner rejected your file transfer request",
+            "alert-secondary"
+          );
+          document.getElementById("btn-upload").disabled = false;
+        } else if (ss["status"] == 201) {
+          showLoading("Waiting for partner to accept file");
+        } else if (ss["status"] == 200 || ss["status"] == 300) {
+          //request accepted
+          showPane("pane-file-transfer");
+          showButtons("btnset-file-transfer");
+          document.getElementById("btn-upload").disabled = false;
+
+          if (ss["status"] == 200) {
+            initTransfer();
+          } else {
+            document
+              .getElementById("btn-file-download")
+              .setAttribute("href", "tunnel/" + ss["tunnelId"]);
+            showPane("pane-file-download");
+          }
+        }
+      });
+
+      socket.on("incomingTransfer", function (ss) {
+        document.getElementById("lbl-incoming-file").innerHTML =
+          "File Name: " + ss["name"];
+        document.getElementById("lbl-incoming-file").innerHTML +=
+          "<br/>Size: " + ss["size"];
+        document.getElementById("lbl-incoming-file").innerHTML +=
+          "<br/>Type: " + ss["type"];
+        showPane("pane-file-accept");
+        showButtons("btnset-file-accept");
+      });
+
+      socket.on("transferUpMore", function () {
+        console.log("Received request for more");
+        if (curPos >= curFile.size) {
+          console.log("Complete data trf");
+          socket.emit("transferComplete", "");
+          return;
+        }
+        var NewFile = curFile.slice(
+          curPos,
+          curPos + Math.min(524288, curFile.size - curPos)
+        );
+        FReader.readAsArrayBuffer(NewFile);
+      });
+
+      socket.on("tunnelAborted", function () {
+        showPane("pane-file");
+        showButtons("btnset-file");
+        showAlert(
+          "Partner terminated the download prematurely",
+          "alert-danger"
+        );
+      });
+
+      socket.on("tunnelClosed", function () {
+        showPane("pane-file");
+        showButtons("btnset-file");
+      });
+
+      socket.emit("readyRequest");
+    });
+
+    function showLoading(msg) {
+      var x = document.getElementsByClassName("pane active");
+      for (var i = 0; i < x.length; i++) {
+        x[i].classList.remove("active");
+      }
+      document.getElementById("pane-loading-message").innerHTML = msg;
+      document.getElementById("pane-loading").classList.add("active");
+    }
+
+    function showPane(paneId) {
+      var x = document.getElementsByClassName("pane active");
+      for (var i = 0; i < x.length; i++) {
+        x[i].classList.remove("active");
+      }
+      document.getElementById(paneId).classList.add("active");
+    }
+
+    function showButtons(btnsetId) {
+      var x = document.getElementsByClassName("btnset active");
+      for (var i = 0; i < x.length; i++) {
+        x[i].classList.remove("active");
+      }
+      document.getElementById(btnsetId).classList.add("active");
+    }
+
+    function showAlert(msg, type) {
+      document.getElementById("alert-message").classList.add(type);
+      document.getElementById("alert-message").innerHTML = msg;
+      $("#alert-message").fadeIn(200, function () {
+        setTimeout(function () {
+          $("#alert-message").fadeOut(200, function () {
+            document.getElementById("alert-message").classList.remove(type);
+          });
+        }, 2000);
+      });
+    }
+
+    //Transfer logic
+    var curPos = 0;
+    var FReader = new FileReader();
+    function initTransfer() {
+      curPos = 0;
+      FReader.onload = function (evnt) {
+        //console.log("Uploading");
+        socket.emit("transferUpStream", {
+          Name: curFile.name,
+          Data: evnt.target.result,
+        });
+        console.log("Sent data");
+        updateTransferProgress();
+        //console.log(curPos);
+        curPos += evnt.target.result.byteLength;
+      };
+      var NewFile = curFile.slice(0, Math.min(524288, curFile.size));
+      FReader.readAsArrayBuffer(NewFile);
+    }
+
+    function updateTransferProgress() {
+      var progress = Math.floor((curPos / curFile.size) * 100);
+      document.getElementById("pb-transfer").style.width = progress + "%";
+      console.log(document.getElementById("pb-transfer").style.width);
+      document.getElementById("transfer-bytes").innerHTML =
+        curPos + " of " + curFile.size;
+    }
+
+    var curFile = undefined;
+    function fileChosen(evnt) {
+      selectedFile = evnt.target.files[0];
+      if (selectedFile != undefined) curFile = selectedFile;
+    }
+  </script>
+</body>
