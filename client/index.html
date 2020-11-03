@@ -1,5 +1,5 @@
 <head>
-  <title>P2P File Sharing</title>
+  <title>Dropr - P2P File Sharing</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8" />
   <link
@@ -10,7 +10,33 @@
   />
   <style>
     body {
-      background-color: #ffffff;
+      background-color: #111111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    footer {
+      color: #ffffff;
+      text-align: center;
+      background-color: #111111;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      height: 60px;
+      padding: 16px;
+    }
+
+    header {
+      color: #ffffff;
+      text-align: center;
+      background-color: #111111;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 60px;
+      padding: 16px;
+      margin: 44px 8px;
     }
 
     .pane {
@@ -77,21 +103,28 @@
         transform: scale(0) translate(80px, 0);
       }
     }
-    .header {
-      text-align: center;
+
+    .card {
+      box-shadow: 0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+        0px 1px 10px 0px rgba(0, 0, 0, 0.12),
+        0px 2px 4px -1px rgba(0, 0, 0, 0.2);
+      width: 700px;
+      border-radius: 16px;
+    }
+    .card-body {
+      
+      
     }
   </style>
 </head>
 <body>
-  <div class="container" style="margin-top: 10vh">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 class="modal-title header">
-            <b> Dropr</b> - Peer to Peer File Sharing
-          </h3>
-        </div>
-        <div class="modal-body">
+  <header>
+    <h2><b> Dropr</b> - Peer to Peer File Sharing</h2>
+  </header>
+  <div style="margin-top: 150px">
+    <div class="card">
+      <div>
+        <div class="card-body">
           <div class="pane active" id="pane-connect">
             <h5 style="margin-bottom: 20px">Your Peer code</h5>
             <div
@@ -482,4 +515,6 @@
       if (selectedFile != undefined) curFile = selectedFile;
     }
   </script>
+
+  <footer>Made by Sumit Kolhe & Om Sapate</footer>
 </body>
