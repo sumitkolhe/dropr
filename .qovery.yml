@@ -1,0 +1,11 @@
+---
+application:
+  name: "dropr"
+  project: "dropr"
+  organization: "QoveryCommunity"
+routers:
+- name: "main-dropr"
+  routes:
+  - application_name: "dropr"
+    paths:
+    - "/*"
