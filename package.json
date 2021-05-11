@@ -1,5 +1,5 @@
 {
-  "name": "Dropr",
+  "name": "dropr",
   "version": "1.0.0",
   "description": "NodeJS File X-fer",
   "main": "server.js",
@@ -11,9 +11,6 @@
     "express": "^4.16.3",
     "nodemon": "^2.0.6",
     "socket.io": "^2.1.1"
-  },
-  "engines": {
-    "node": "8.x"
   },
   "license": "MIT"
 }

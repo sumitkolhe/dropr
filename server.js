@@ -5,7 +5,7 @@ var server = require("http").createServer(app);
 var io = require("socket.io").listen(server);
 var fs = require("fs");
 
-var serverPort = 3000;
+var serverPort = process.env.PORT || 80;
 var socketStates = {};
 var users = {};
 var tunnels = {};
